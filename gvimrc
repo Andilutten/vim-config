@@ -9,3 +9,4 @@ set guioptions-=e
 
 colors zellner
 highlight EndOfBuffer guifg=bg
+highlight! link Pmenu StatusLineNC 
