@@ -20,6 +20,7 @@ set completeopt-=preview
 set splitbelow splitright
 set smartindent
 set nowrap
+set t_Co=16
 
 function! s:find_file() abort "{{{
 	"" Find file interactivly
