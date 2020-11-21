@@ -1,0 +1,18 @@
+[submodule "pack/github/start/vim-lsp"]
+	path = pack/github/start/vim-lsp
+	url = git@github.com:prabirshrestha/vim-lsp
+[submodule "pack/github/start/vim-unimpaired"]
+	path = pack/github/start/vim-unimpaired
+	url = git@github.com:tpope/vim-unimpaired
+[submodule "pack/github/start/vim-projectionist"]
+	path = pack/github/start/vim-projectionist
+	url = git@github.com:tpope/vim-projectionist
+[submodule "pack/github/start/vim-repeat"]
+	path = pack/github/start/vim-repeat
+	url = git@github.com:tpope/vim-repeat
+[submodule "pack/github/start/vim-surround"]
+	path = pack/github/start/vim-surround
+	url = git@github.com:tpope/vim-surround
+[submodule "pack/github/start/vim-fugitive"]
+	path = pack/github/start/vim-fugitive
+	url = git@github.com:tpope/vim-fugitive
