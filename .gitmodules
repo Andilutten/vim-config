@@ -16,3 +16,6 @@
 [submodule "pack/github/start/vim-fugitive"]
 	path = pack/github/start/vim-fugitive
 	url = git@github.com:tpope/vim-fugitive
+[submodule "pack/github/start/vim-commentary"]
+	path = pack/github/start/vim-commentary
+	url = git@github.com:tpope/vim-commentary

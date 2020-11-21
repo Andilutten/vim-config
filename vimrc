@@ -6,8 +6,7 @@ let $MENU_PROGRAM=get(environ(), 'MENU_PROGRAM', 'dmenu')
 let mapleader=' '
 
 set nocompatible
-set hidden 
-set magic
+set hidden magic
 set tabstop=4 shiftwidth=4
 set noexpandtab
 set path=**
@@ -18,6 +17,9 @@ set wildmenu
 set mouse=a
 set clipboard=unnamedplus
 set completeopt-=preview
+set splitbelow splitright
+set smartindent
+set nowrap
 
 function! s:find_file() abort "{{{
 	"" Find file interactivly
@@ -71,6 +73,10 @@ augroup cfamily "{{{
 			\ name: 'clangd',
 			\ cmd: {server_info -> ['clangd']},
 			\ allowlist: ['c', 'cpp'],
+			\ semantic_highlight: {
+			\ 	'entity.name.function.cpp': 'Label',
+			\	'variable.other.field.cpp': 'Variable'
+			\ },
 			\ })
 	endif
 	autocmd FileType c,cpp packadd termdebug

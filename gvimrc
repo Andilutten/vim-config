@@ -9,4 +9,6 @@ set guioptions-=e
 
 colors zellner
 highlight EndOfBuffer guifg=bg
-highlight! link Pmenu StatusLineNC 
+highlight Terminal guifg=white guibg=black
+highlight Variable guifg=#28A939
+highlight! link Pmenu Normal 
