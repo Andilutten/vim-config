@@ -1,4 +1,4 @@
-let GIT_EDITOR=get(environ(), 'GIT_EDITOR', 'gvim --remote-tab-wait')
+let $GIT_EDITOR=get(environ(), 'GIT_EDITOR', 'gvim --remote-tab-wait')
 
 set guifont=JetBrains\ Mono\ Bold\ 12
 set guioptions-=m
