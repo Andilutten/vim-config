@@ -22,6 +22,10 @@ set smartindent
 set nowrap
 set t_Co=16
 
+if executable('rg')
+	set grepprg=rg\ -n
+endif
+
 function! s:find_file() abort "{{{
 	"" Find file interactivly
 	let l:path = split(&path, ',')->join(' ')

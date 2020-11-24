@@ -1,4 +1,5 @@
 let $GIT_EDITOR=get(environ(), 'GIT_EDITOR', 'gvim --remote-tab-wait')
+let $EDITOR=get(environ(), 'EDITOR', 'gvim --remote')
 
 set guifont=JetBrains\ Mono\ Bold\ 11
 set guioptions-=m
@@ -40,5 +41,5 @@ function! s:get_font_props() abort "{{{
 	\ }
 endfunction "}}}
 
-nmap <c-pageup> <cmd>call <SID>increment_font_size()<cr>
-nmap <c-pagedown> <cmd>call <SID>decrement_font_size()<cr>
+nmap <c-s-pageup> <cmd>call <SID>increment_font_size()<cr>
+nmap <c-s-pagedown> <cmd>call <SID>decrement_font_size()<cr>
