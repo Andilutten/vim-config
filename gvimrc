@@ -1,18 +1,10 @@
 let $GIT_EDITOR=get(environ(), 'GIT_EDITOR', 'gvim --remote-tab-wait')
 let $EDITOR=get(environ(), 'EDITOR', 'gvim --remote')
 
-set guifont=JetBrains\ Mono\ Bold\ 11
-set guioptions-=m
+set guifont=JetBrains\ Mono\ Bold\ 10
 set guioptions-=T
 set guioptions-=r
 set guioptions-=L
-set guioptions-=e
-
-colors zellner
-highlight EndOfBuffer guifg=bg
-highlight Terminal guifg=white guibg=black
-highlight Variable guifg=#28A939
-highlight! link Pmenu Normal 
 
 function! s:increment_font_size() abort "{{{
 	let l:font_props = s:get_font_props()

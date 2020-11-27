@@ -1,13 +1,13 @@
 syntax on
 filetype plugin on
 
-let $MENU_PROGRAM=get(environ(), 'MENU_PROGRAM', 'dmenu')
-
 let mapleader=' '
+let s:findgrp='find . -type f'
 
 set nocompatible
 set hidden magic
 set tabstop=4 shiftwidth=4
+set hlsearch incsearch
 set noexpandtab
 set path=**
 set ignorecase smartcase
@@ -20,37 +20,56 @@ set completeopt-=preview
 set splitbelow splitright
 set smartindent
 set nowrap
-set t_Co=16
+set autoread
+set termguicolors
+set background=dark
+set cursorline
+set t_Co=256
+
+" Tmux termcolors fix {{{
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+" }}}
 
 if executable('rg')
 	set grepprg=rg\ -n
 endif
 
+if executable('fd')
+	let s:findprg='fd --type f'
+endif
+
+colors codedark
+
 function! s:find_file() abort "{{{
 	"" Find file interactivly
-	let l:path = split(&path, ',')->join(' ')
-	let l:filename = system(join([
-		\'find', l:path, '-type f | ',
-		\ $MENU_PROGRAM,'-p "find file:"'
-		\ ]))
-	call execute(join(['edit', l:filename], ' '))
+	call fzf#run(#{
+	\	options: '--prompt "Find file: "',
+	\	source: s:findprg,
+	\	sink: 'edit',
+	\	window: #{ width: 0.8, height: 0.8 },
+	\ })
 endfunction "}}}
 
 function! s:select_buffer() abort "{{{
 	""" Select buffer interactivly
-	redir => l:buffers
-	silent buffers
-	redir END
-	
-	let l:filenames = l:buffers
+		redir => l:buffers
+		silent buffers
+		redir END
+
+		let l:filenames = l:buffers
 		\->split('\n')
 		\->filter({_, v -> len(v)})
 		\->map({_, v -> matchstr(v, '\v"[^"]+"')})
 		\->map({_, v -> substitute(v, '"', '', 'g')})
 
-	let l:filename = system($MENU_PROGRAM . ' -p "select buffer"', l:filenames)
-	call execute(join(['buffer', l:filename], ' '))
-endfunction "}}}
+		call fzf#run(#{
+				\	options: '--prompt "Select buffer: "',
+				\ 	source: l:filenames,
+				\	sink: 'buffer',
+				\	window: #{ width: 0.8, height: 0.8 },
+				\ })
+		endfunction "}}}
 
 function! s:on_lsp_buffer_enabled() abort "{{{
     setlocal omnifunc=lsp#complete
@@ -60,16 +79,20 @@ function! s:on_lsp_buffer_enabled() abort "{{{
     nmap <buffer> gr <plug>(lsp-references)
     nmap <buffer> gi <plug>(lsp-implementation)
     nmap <buffer> gt <plug>(lsp-type-definition)
+	nmap <buffer> ga <plug>(lsp-code-action)
     nmap <buffer> <leader>rn <plug>(lsp-rename)
     nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
     nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
 endfunction "}}}
 
-if executable($MENU_PROGRAM)
-	nnoremap <silent> <leader>b <cmd>call <SID>select_buffer()<cr>
-	nnoremap <silent> <leader>f <cmd>call <SID>find_file()<cr>
-endif
+nnoremap <silent> <leader>b <cmd>call <SID>select_buffer()<cr>
+nnoremap <silent> <leader>f <cmd>call <SID>find_file()<cr>
+
+augroup generic "{{{
+	autocmd!
+	autocmd FocusGained * checktime
+augroup END "}}}
 
 augroup cfamily "{{{
 	autocmd!
@@ -107,7 +130,7 @@ augroup typescript "{{{
 		autocmd User lsp_setup call lsp#register_server(#{
 			\ name: 'tsserver',
 			\ cmd: {server_info -> ['typescript-language-server', '--stdio']},
-			\ allowlist: ['typescript', 'typescriptreact'],
+			\ allowlist: ['typescript', 'typescriptreact', 'javascript', 'javascriptreact'],
 			\ })
 	endif
 	autocmd FileType typescript,typescriptreact setlocal tabstop=2 shiftwidth=2 expandtab
@@ -118,6 +141,7 @@ augroup lspclient "{{{
 	let g:lsp_diagnostics_float_cursor = 1
 	let g:lsp_semantic_enabled = 1
 	autocmd User lsp_buffer_enabled call <SID>on_lsp_buffer_enabled()
+	command! Format LspDocumentFormat
 augroup END "}}}
 
 helptags ALL

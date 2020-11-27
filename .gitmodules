@@ -19,3 +19,15 @@
 [submodule "pack/github/start/vim-commentary"]
 	path = pack/github/start/vim-commentary
 	url = git@github.com:tpope/vim-commentary
+[submodule "pack/github/start/vim-code-dark"]
+	path = pack/github/start/vim-code-dark
+	url = git@github.com:tomasiser/vim-code-dark
+[submodule "pack/github/start/fzf.vim"]
+	path = pack/github/start/fzf.vim
+	url = git@github.com:junegunn/fzf.vim
+[submodule "pack/github/start/vim-dispatch"]
+	path = pack/github/start/vim-dispatch
+	url = git@github.com:tpope/vim-dispatch
+[submodule "pack/github/start/terminus"]
+	path = pack/github/start/terminus
+	url = git@github.com:wincent/terminus
