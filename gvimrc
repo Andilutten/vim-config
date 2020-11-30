@@ -6,6 +6,30 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 
+" Theming {{{
+colors codedark
+hi EndOfBuffer guifg=bg
+
+let g:terminal_ansi_colors = [
+	\ '#6A787A',
+	\ '#E9653B',
+	\ '#39E9A8',
+	\ '#E5B684',
+	\ '#44AAE6',
+	\ '#E17599',
+	\ '#3DD5E7',
+	\ '#C3DDE1',
+	\ '#598489',
+	\ '#E65029',
+	\ '#00FF9A',
+	\ '#E89440',
+	\ '#009AFB',
+	\ '#FF578F',
+	\ '#5FFFFF',
+	\ '#D9FBFF'
+	\ ]
+" }}}
+
 function! s:increment_font_size() abort "{{{
 	let l:font_props = s:get_font_props()
 	let l:font_family = l:font_props.family

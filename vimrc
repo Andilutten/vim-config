@@ -2,7 +2,7 @@ syntax on
 filetype plugin on
 
 let mapleader=' '
-let s:findgrp='find . -type f'
+let s:findprg='find . -type f'
 
 set nocompatible
 set hidden magic
@@ -13,6 +13,7 @@ set path=**
 set ignorecase smartcase
 set number relativenumber
 set foldmethod=marker
+set foldmarker={{{,}}}
 set wildmenu
 set mouse=a
 set clipboard=unnamedplus
@@ -21,10 +22,8 @@ set splitbelow splitright
 set smartindent
 set nowrap
 set autoread
-set termguicolors
-set background=dark
 set cursorline
-set t_Co=256
+set t_Co=16
 
 " Tmux termcolors fix {{{
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
@@ -39,7 +38,6 @@ if executable('fd')
 	let s:findprg='fd --type f'
 endif
 
-colors codedark
 
 function! s:find_file() abort "{{{
 	"" Find file interactivly
@@ -53,28 +51,25 @@ endfunction "}}}
 
 function! s:select_buffer() abort "{{{
 	""" Select buffer interactivly
-		redir => l:buffers
-		silent buffers
-		redir END
+	let l:buffers = getbufinfo(#{buflisted: v:true})
+		\ ->map({ _, v -> v.name })
+		\ ->filter({ _, v -> len(v)})
 
-		let l:filenames = l:buffers
-		\->split('\n')
-		\->filter({_, v -> len(v)})
-		\->map({_, v -> matchstr(v, '\v"[^"]+"')})
-		\->map({_, v -> substitute(v, '"', '', 'g')})
-
-		call fzf#run(#{
-				\	options: '--prompt "Select buffer: "',
-				\ 	source: l:filenames,
-				\	sink: 'buffer',
-				\	window: #{ width: 0.8, height: 0.8 },
-				\ })
-		endfunction "}}}
+	call fzf#run(#{
+			\	options: '--prompt "Select buffer: "',
+			\ 	source: l:buffers,
+			\	sink: 'buffer',
+			\	window: #{ width: 0.8, height: 0.8 },
+			\ })
+endfunction "}}}
 
 function! s:on_lsp_buffer_enabled() abort "{{{
-    setlocal omnifunc=lsp#complete
-    setlocal signcolumn=number
+    setlocal 
+		\ omnifunc=lsp#complete
+		\ signcolumn=number
+
     if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+
     nmap <buffer> gd <plug>(lsp-definition)
     nmap <buffer> gr <plug>(lsp-references)
     nmap <buffer> gi <plug>(lsp-implementation)
