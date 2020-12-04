@@ -31,3 +31,18 @@
 [submodule "pack/github/start/terminus"]
 	path = pack/github/start/terminus
 	url = git@github.com:wincent/terminus
+[submodule "pack/github/start/fzf"]
+	path = pack/github/start/fzf
+	url = git@github.com:junegunn/fzf
+[submodule "pack/github/start/vim-gruvbox8"]
+	path = pack/github/start/vim-gruvbox8
+	url = git@github.com:lifepillar/vim-gruvbox8
+[submodule "pack/github/start/vim-sleuth"]
+	path = pack/github/start/vim-sleuth
+	url = git@github.com:tpope/vim-sleuth
+[submodule "pack/github/start/vim-dadbod"]
+	path = pack/github/start/vim-dadbod
+	url = git@github.com:tpope/vim-dadbod
+[submodule "pack/github/start/vim-polyglot"]
+	path = pack/github/start/vim-polyglot
+	url = git@github.com:sheerun/vim-polyglot

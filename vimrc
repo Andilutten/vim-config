@@ -2,9 +2,9 @@ syntax on
 filetype plugin on
 
 let mapleader=' '
-let s:findprg='find . -type f'
 
 set nocompatible
+set encoding=utf8
 set hidden magic
 set tabstop=4 shiftwidth=4
 set hlsearch incsearch
@@ -18,71 +18,23 @@ set wildmenu
 set mouse=a
 set clipboard=unnamedplus
 set completeopt-=preview
+set completeopt+=noselect
 set splitbelow splitright
 set smartindent
 set nowrap
 set autoread
-set cursorline
+set background=dark
 set t_Co=16
 
-" Tmux termcolors fix {{{
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-" }}}
+colors gruvbox8
 
 if executable('rg')
 	set grepprg=rg\ -n
 endif
 
-if executable('fd')
-	let s:findprg='fd --type f'
-endif
-
-
-function! s:find_file() abort "{{{
-	"" Find file interactivly
-	call fzf#run(#{
-	\	options: '--prompt "Find file: "',
-	\	source: s:findprg,
-	\	sink: 'edit',
-	\	window: #{ width: 0.8, height: 0.8 },
-	\ })
-endfunction "}}}
-
-function! s:select_buffer() abort "{{{
-	""" Select buffer interactivly
-	let l:buffers = getbufinfo(#{buflisted: v:true})
-		\ ->map({ _, v -> v.name })
-		\ ->filter({ _, v -> len(v)})
-
-	call fzf#run(#{
-			\	options: '--prompt "Select buffer: "',
-			\ 	source: l:buffers,
-			\	sink: 'buffer',
-			\	window: #{ width: 0.8, height: 0.8 },
-			\ })
-endfunction "}}}
-
-function! s:on_lsp_buffer_enabled() abort "{{{
-    setlocal 
-		\ omnifunc=lsp#complete
-		\ signcolumn=number
-
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-
-    nmap <buffer> gd <plug>(lsp-definition)
-    nmap <buffer> gr <plug>(lsp-references)
-    nmap <buffer> gi <plug>(lsp-implementation)
-    nmap <buffer> gt <plug>(lsp-type-definition)
-	nmap <buffer> ga <plug>(lsp-code-action)
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-    nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
-    nmap <buffer> K <plug>(lsp-hover)
-endfunction "}}}
-
-nnoremap <silent> <leader>b <cmd>call <SID>select_buffer()<cr>
-nnoremap <silent> <leader>f <cmd>call <SID>find_file()<cr>
+nnoremap <leader>b :Buffers<cr>
+nnoremap <leader>f :Files<cr>
+nnoremap <leader>g :Git
 
 augroup generic "{{{
 	autocmd!
@@ -97,13 +49,17 @@ augroup cfamily "{{{
 			\ cmd: {server_info -> ['clangd']},
 			\ allowlist: ['c', 'cpp'],
 			\ semantic_highlight: {
-			\ 	'entity.name.function.cpp': 'Label',
-			\	'variable.other.field.cpp': 'Variable'
+			\ 	'entity.name.function.cpp': 'Identifier',
+			\	'variable.other.field.cpp': 'Type'
 			\ },
 			\ })
 	endif
 	autocmd FileType c,cpp packadd termdebug
 	autocmd FileType c,cpp compiler gcc
+
+	if executable('devhelp')
+		command! DevHelp call job_start('devhelp --search=' . expand('<cword>'))
+	endif
 augroup END "}}}
 
 augroup golang "{{{
@@ -128,7 +84,11 @@ augroup typescript "{{{
 			\ allowlist: ['typescript', 'typescriptreact', 'javascript', 'javascriptreact'],
 			\ })
 	endif
-	autocmd FileType typescript,typescriptreact setlocal tabstop=2 shiftwidth=2 expandtab
+	autocmd FileType typescript,typescriptreact setlocal 
+				\ tabstop=2 
+				\ shiftwidth=2 
+				\ expandtab
+				\ foldmarker=#region,#endregion
 augroup END "}}}
 
 augroup lspclient "{{{
@@ -138,5 +98,23 @@ augroup lspclient "{{{
 	autocmd User lsp_buffer_enabled call <SID>on_lsp_buffer_enabled()
 	command! Format LspDocumentFormat
 augroup END "}}}
+
+function! s:on_lsp_buffer_enabled() abort "{{{
+    setlocal 
+		\ omnifunc=lsp#complete
+		\ signcolumn=number
+
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+	nmap <buffer> ga <plug>(lsp-code-action)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+endfunction "}}}
 
 helptags ALL
