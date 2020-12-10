@@ -46,3 +46,12 @@
 [submodule "pack/github/start/vim-polyglot"]
 	path = pack/github/start/vim-polyglot
 	url = git@github.com:sheerun/vim-polyglot
+[submodule "pack/github/start/coc.nvim"]
+	path = pack/github/start/coc.nvim
+	url = git@github.com:neoclide/coc.nvim
+[submodule "pack/github/start/vim-colors-plain"]
+	path = pack/github/start/vim-colors-plain
+	url = git@github.com:andreypopp/vim-colors-plain
+[submodule "pack/github/start/gv.vim"]
+	path = pack/github/start/gv.vim
+	url = git@github.com:junegunn/gv.vim

@@ -2,6 +2,10 @@ syntax on
 filetype plugin on
 
 let mapleader=' '
+let g:coc_global_extensions = [
+			\ 'coc-marketplace', 
+			\ 'coc-lists'
+			\ ]
 
 set nocompatible
 set encoding=utf8
@@ -32,8 +36,8 @@ if executable('rg')
 	set grepprg=rg\ -n
 endif
 
-nnoremap <leader>b :Buffers<cr>
-nnoremap <leader>f :Files<cr>
+
+nnoremap <leader>l :CocList<cr>
 nnoremap <leader>g :Git
 
 augroup generic "{{{
@@ -43,19 +47,9 @@ augroup END "}}}
 
 augroup cfamily "{{{
 	autocmd!
-	if executable('clangd')
-		autocmd User lsp_setup call lsp#register_server(#{
-			\ name: 'clangd',
-			\ cmd: {server_info -> ['clangd']},
-			\ allowlist: ['c', 'cpp'],
-			\ semantic_highlight: {
-			\ 	'entity.name.function.cpp': 'Identifier',
-			\	'variable.other.field.cpp': 'Type'
-			\ },
-			\ })
-	endif
 	autocmd FileType c,cpp packadd termdebug
 	autocmd FileType c,cpp compiler gcc
+    autocmd FileType c,cpp call <SID>coc_setup()
 
 	if executable('devhelp')
 		command! DevHelp call job_start('devhelp --search=' . expand('<cword>'))
@@ -64,57 +58,60 @@ augroup END "}}}
 
 augroup golang "{{{
 	autocmd!
-	if executable('gopls')
-		autocmd User lsp_setup call lsp#register_server(#{
-			\ name: 'gopls',
-			\ cmd: {server_info -> ['gopls']},
-			\ allowlist: ['go'],	
-			\ })
-	endif	
+    autocmd FileType go call <SID>coc_setup()
 	autocmd FileType go compiler go
 	autocmd FileType go setlocal tabstop=8 shiftwidth=8 noexpandtab
 augroup END "}}}
 
 augroup typescript "{{{
 	autocmd!
-	if executable('typescript-language-server')
-		autocmd User lsp_setup call lsp#register_server(#{
-			\ name: 'tsserver',
-			\ cmd: {server_info -> ['typescript-language-server', '--stdio']},
-			\ allowlist: ['typescript', 'typescriptreact', 'javascript', 'javascriptreact'],
-			\ })
-	endif
-	autocmd FileType typescript,typescriptreact setlocal 
+    autocmd FileType typescript,typescriptreact,javascript,javascriptreact call <SID>coc_setup()
+	autocmd FileType typescript,typescriptreact,javascript,javascriptreact setlocal 
 				\ tabstop=2 
 				\ shiftwidth=2 
 				\ expandtab
 				\ foldmarker=#region,#endregion
 augroup END "}}}
 
-augroup lspclient "{{{
-	autocmd!
-	let g:lsp_diagnostics_float_cursor = 1
-	let g:lsp_semantic_enabled = 1
-	autocmd User lsp_buffer_enabled call <SID>on_lsp_buffer_enabled()
-	command! Format LspDocumentFormat
-augroup END "}}}
+function! s:coc_setup() abort "{{{
+  " This configuration is taken from coc github page
+  nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> gr <Plug>(coc-references)
+  nmap <silent> <leader>r <Plug>(coc-rename)
+  nnoremap <silent> gh :call <SID>show_documentation()<CR>
+  nnoremap <silent> <leader>l :CocList<cr>
+  nnoremap <silent> <leader>. :CocAction<cr>
+  vnoremap <silent> <leader>. :CocAction<cr>
+  inoremap <silent><expr> <c-@> coc#refresh()
 
-function! s:on_lsp_buffer_enabled() abort "{{{
-    setlocal 
-		\ omnifunc=lsp#complete
-		\ signcolumn=number
+  xmap if <Plug>(coc-funcobj-i)
+  omap if <Plug>(coc-funcobj-i)
+  xmap af <Plug>(coc-funcobj-a)
+  omap af <Plug>(coc-funcobj-a)
+  xmap ic <Plug>(coc-classobj-i)
+  omap ic <Plug>(coc-classobj-i)
+  xmap ac <Plug>(coc-classobj-a)
+  omap ac <Plug>(coc-classobj-a)
 
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+  if exists('*complete_info')
+    inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+  else
+    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+  endif
 
-    nmap <buffer> gd <plug>(lsp-definition)
-    nmap <buffer> gr <plug>(lsp-references)
-    nmap <buffer> gi <plug>(lsp-implementation)
-    nmap <buffer> gt <plug>(lsp-type-definition)
-	nmap <buffer> ga <plug>(lsp-code-action)
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-    nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
-    nmap <buffer> K <plug>(lsp-hover)
+  function! s:show_documentation()
+    if (index(['vim','help'], &filetype) >= 0)
+      execute 'h '.expand('<cword>')
+    else
+      call CocAction('doHover')
+    endif
+  endfunction
+
+  autocmd CursorHold * silent call CocActionAsync('highlight')
+
+  command! -nargs=0 Format :call CocAction('format')
+  command! -nargs=? Fold :call CocAction('fold', <f-args>)
+  command! -nargs=0 OR   :call CocAction('runCommand', 'editor.action.organizeImport')
 endfunction "}}}
 
 helptags ALL
