@@ -49,3 +49,6 @@
 [submodule "pack/github/start/gv.vim"]
 	path = pack/github/start/gv.vim
 	url = git@github.com:junegunn/gv.vim
+[submodule "pack/github/start/vim-speeddating"]
+	path = pack/github/start/vim-speeddating
+	url = git@github.com:tpope/vim-speeddating

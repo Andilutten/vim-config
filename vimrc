@@ -73,6 +73,11 @@ augroup typescript "{{{
 				\ foldmarker=#region,#endregion
 augroup END "}}}
 
+augroup python
+  autocmd!
+  autocmd FileType python call <SID>coc_setup()
+augroup END
+
 function! s:coc_setup() abort "{{{
   " This configuration is taken from coc github page
   nmap <silent> gd <Plug>(coc-definition)
