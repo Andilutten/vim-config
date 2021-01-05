@@ -28,14 +28,16 @@ set smartindent
 set nowrap
 set autoread
 set background=dark
-set t_Co=16
-
-colors gruvbox8
 
 if executable('rg')
 	set grepprg=rg\ -n
 endif
 
+augroup theming " {{{
+	autocmd!
+	autocmd ColorScheme gruvbox8 highlight Normal ctermbg=none
+    colors gruvbox8
+augroup END " }}}
 
 nnoremap <leader>l :CocList<cr>
 nnoremap <leader>g :Git
@@ -73,10 +75,15 @@ augroup typescript "{{{
 				\ foldmarker=#region,#endregion
 augroup END "}}}
 
-augroup python
+augroup python "{{{
   autocmd!
   autocmd FileType python call <SID>coc_setup()
-augroup END
+augroup END "}}}
+
+augroup dotnet "{{{
+  autocmd!
+  autocmd FileType cs call <SID>coc_setup()
+augroup END "}}}
 
 function! s:coc_setup() abort "{{{
   " This configuration is taken from coc github page
@@ -118,5 +125,9 @@ function! s:coc_setup() abort "{{{
   command! -nargs=? Fold :call CocAction('fold', <f-args>)
   command! -nargs=0 OR   :call CocAction('runCommand', 'editor.action.organizeImport')
 endfunction "}}}
+
+if exists('g:GtkGuiLoaded')
+	call rpcnotify(1, 'Gui', 'Option', 'Popupmenu', 0)
+endif
 
 helptags ALL

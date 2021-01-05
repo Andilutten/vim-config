@@ -52,3 +52,6 @@
 [submodule "pack/github/start/vim-speeddating"]
 	path = pack/github/start/vim-speeddating
 	url = git@github.com:tpope/vim-speeddating
+[submodule "pack/github/start/papercolor-theme"]
+	path = pack/github/start/papercolor-theme
+	url = git@github.com:NLKNguyen/papercolor-theme
