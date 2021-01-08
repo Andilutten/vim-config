@@ -1,3 +1,6 @@
+" Vim runtime configuration
+" Author: Andreas Malmqvist
+
 syntax on
 filetype plugin on
 
@@ -11,6 +14,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
+" Obligatory stuff
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-projectionist'
@@ -21,12 +25,18 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-sleuth'
 Plug 'wincent/terminus'
 
+" Git integration
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 
+" Theming
 Plug 'lifepillar/vim-gruvbox8'
 
+" IDE features
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Task managment
+Plug 'fifi2/gtd.vim'
 
 call plug#end()
 
@@ -38,6 +48,8 @@ let g:coc_global_extensions = [
 			\ 'coc-marketplace', 
 			\ 'coc-lists'
 			\ ]
+let g:gtd#dir = '~/Tasks'
+
 "}}}
 
 "{{{ options
@@ -75,8 +87,10 @@ augroup theming " {{{
     colors gruvbox8
 augroup END " }}}
 
+" Mappings {{{
 nnoremap <leader>l :CocList<cr>
 nnoremap <leader>g :Git
+" }}}
 
 augroup generic "{{{
 	autocmd!
@@ -161,5 +175,3 @@ function! s:coc_setup() abort "{{{
   command! -nargs=? Fold :call CocAction('fold', <f-args>)
   command! -nargs=0 OR   :call CocAction('runCommand', 'editor.action.organizeImport')
 endfunction "}}}
-
-helptags ALL
