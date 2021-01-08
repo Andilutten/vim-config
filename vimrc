@@ -1,12 +1,46 @@
 syntax on
 filetype plugin on
 
+" plugins {{{
+
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.vim/plugged')
+
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-speeddating'
+Plug 'tpope/vim-sleuth'
+Plug 'wincent/terminus'
+
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim'
+
+Plug 'lifepillar/vim-gruvbox8'
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+call plug#end()
+
+" }}}
+
+" variables {{{ 
 let mapleader=' '
 let g:coc_global_extensions = [
 			\ 'coc-marketplace', 
 			\ 'coc-lists'
 			\ ]
+"}}}
 
+"{{{ options
 set nocompatible
 set encoding=utf8
 set hidden magic
@@ -32,10 +66,12 @@ set background=dark
 if executable('rg')
 	set grepprg=rg\ -n
 endif
+"}}}
 
 augroup theming " {{{
 	autocmd!
 	autocmd ColorScheme gruvbox8 highlight Normal ctermbg=none
+	autocmd ColorScheme gruvbox8 highlight EndOfBuffer ctermfg=0
     colors gruvbox8
 augroup END " }}}
 
@@ -125,9 +161,5 @@ function! s:coc_setup() abort "{{{
   command! -nargs=? Fold :call CocAction('fold', <f-args>)
   command! -nargs=0 OR   :call CocAction('runCommand', 'editor.action.organizeImport')
 endfunction "}}}
-
-if exists('g:GtkGuiLoaded')
-	call rpcnotify(1, 'Gui', 'Option', 'Popupmenu', 0)
-endif
 
 helptags ALL

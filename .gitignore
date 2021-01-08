@@ -1,2 +1,5 @@
 .netrwhist
 /sessions/
+/autoload/
+/plugged/
+*.swp
