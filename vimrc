@@ -1,8 +1,10 @@
 " Vim runtime configuration
 " Author: Andreas Malmqvist
 
-syntax on
-filetype plugin on
+if !has('nvim')
+  syntax on
+  filetype plugin on
+endif
 
 " plugins {{{
 
@@ -25,12 +27,14 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-sleuth'
 Plug 'wincent/terminus'
 
-" Git integration
+" Integration plugins
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
+Plug 'lambdalisue/vim-manpager'
 
 " Theming
 Plug 'lifepillar/vim-gruvbox8'
+Plug 'bluz71/vim-moonfly-statusline'
 
 " IDE features
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -38,22 +42,49 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Task managment
 Plug 'fifi2/gtd.vim'
 
+" Extra syntax
+Plug 'sheerun/vim-polyglot'
+
+" Nvim specific
+if has('nvim')
+  Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+endif
+
 call plug#end()
 
 " }}}
 
 " variables {{{ 
 let mapleader=' '
+let g:moonflyIgnoreDefaultColors = 1
 let g:coc_global_extensions = [
 			\ 'coc-marketplace', 
 			\ 'coc-lists'
 			\ ]
 let g:gtd#dir = '~/Tasks'
-
+let g:gtd#review = [
+      \ '(!inbox + !scheduled-'.strftime("%Y%m%d").') @work',
+      \ '!todo @work',
+      \ '!waiting @work',
+      \ ]
 "}}}
 
-"{{{ options
-set nocompatible
+" compatibility {{{
+if &term =~ '^screen'
+    " tmux will send xterm-style keys when its xterm-keys option is on
+    execute "set <xUp>=\e[1;*A"
+    execute "set <xDown>=\e[1;*B"
+    execute "set <xRight>=\e[1;*C"
+    execute "set <xLeft>=\e[1;*D"
+endif
+" }}}
+
+" {{{ options
+
+if !has('nvim') 
+	set nocompatible
+endif
+
 set encoding=utf8
 set hidden magic
 set tabstop=4 shiftwidth=4
@@ -74,22 +105,35 @@ set smartindent
 set nowrap
 set autoread
 set background=dark
-
-if executable('rg')
-	set grepprg=rg\ -n
+if has('nvim')
+  set termguicolors
 endif
+
 "}}}
 
 augroup theming " {{{
 	autocmd!
 	autocmd ColorScheme gruvbox8 highlight Normal ctermbg=none
-	autocmd ColorScheme gruvbox8 highlight EndOfBuffer ctermfg=0
-    colors gruvbox8
+	autocmd ColorScheme gruvbox8 highlight EndOfBuffer ctermfg=0 guifg=bg
+	colors gruvbox8
+
+	" Colors for moonfly statusline
+	highlight! link User1 DiffText
+	highlight! link User2 DiffAdd
+	highlight! link User3 Search
+	highlight! link User4 IncSearch
+	highlight! link User5 StatusLine
+	highlight! link User6 StatusLine
+	highlight! link User7 StatusLine
 augroup END " }}}
 
-" Mappings {{{
+" mappings {{{
 nnoremap <leader>l :CocList<cr>
 nnoremap <leader>g :Git
+
+nnoremap <leader>tt :GtdReview<cr>
+nnoremap <leader>tn :GtdNew<cr>
+
 " }}}
 
 augroup generic "{{{
@@ -123,6 +167,11 @@ augroup typescript "{{{
 				\ shiftwidth=2 
 				\ expandtab
 				\ foldmarker=#region,#endregion
+augroup END "}}}
+
+augroup gdscript "{{{
+	autocmd!
+	autocmd FileType gdscript3,gd call <SID>coc_setup()
 augroup END "}}}
 
 augroup python "{{{
